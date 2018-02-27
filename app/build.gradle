@@ -1,0 +1,72 @@
+apply plugin: 'com.android.application'
+
+android {
+    signingConfigs {
+        release {
+            keyAlias 'android.keystore'
+            keyPassword 'android'
+            storeFile file('F:/Androiddevelop/AVD/.android/android.keystore')
+            storePassword 'android'
+        }
+    }
+    compileSdkVersion 25
+    buildToolsVersion '26.0.2'
+    flavorDimensions "versionCode"
+    defaultConfig {
+        applicationId "test.llx.com.audioplay_kedademo"
+        minSdkVersion 14
+        targetSdkVersion 21
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        //配置个推应用参数
+        manifestPlaceholders = [
+                GETUI_APP_ID    : "XED2R9BoeI8uI2MGmQB7YA",
+                GETUI_APP_KEY   : "Y1x4FQA6OK7FSH8vYSw9s5",
+                GETUI_APP_SECRET: "hXj3A0lHoA6A4JQ6Xt8Lt1"
+        ]
+        //指定个推所需的 CPU 架构
+        ndk {
+            abiFilters "armeabi", "armeabi-v7a", "x86_64"
+        }
+    }
+    buildTypes {
+        release {
+            //指定签名为release,如果不配置仍然是未签名的包
+            signingConfig signingConfigs.release
+
+            minifyEnabled false
+
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    productFlavors {
+
+        xiaomi {}
+        qihu360 {}
+        baidu {}
+        wandoujia {}
+
+
+
+        productFlavors.all { flavor ->
+            flavor.manifestPlaceholders = [UMENG_CHANNEL_VALUE: name]
+        }
+
+    }
+}
+
+
+
+dependencies {
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+    compile 'com.android.support.constraint:constraint-layout:1.0.1'
+    testCompile 'junit:junit:4.12'
+    compile 'com.android.support:appcompat-v7:25.2.0'
+    compile 'com.google.android.gms:play-services-maps:10.2.0'
+    //个推依赖sdk
+    compile 'com.getui:sdk:2.+'
+}
